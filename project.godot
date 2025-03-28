@@ -13,7 +13,15 @@ config_version=5
 config/name="UnstableStudents(3dmake)"
 run/main_scene="res://scene/HomeScreen.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
+boot_splash/show_image=false
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=1366
+window/size/viewport_height=768
+window/stretch/mode="canvas_items"
+window/stretch/scale=0.5
 
 [dotnet]
 

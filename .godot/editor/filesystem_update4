@@ -1,4 +1,4 @@
-res://HomeScreen.tscn
 res://scene/HomeScreen.tscn
-res://TestMazzo.gd
+res://oggetti/carta.res
 res://test_mazzo.tscn
+res://oggetti/carta.gd

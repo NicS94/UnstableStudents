@@ -1,2 +1,8 @@
+Node2D
+CollisionShape2D
+RigidBody2D
+Button
+TextureButton
 Node
+AnimationPlayer
 ItemList

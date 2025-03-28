@@ -11,4 +11,5 @@ script = ExtResource("1_1ldby")
 visible = false
 
 [node name="First page" parent="." instance=ExtResource("3_lk3ew")]
+script = null
 metadata/avanti = false

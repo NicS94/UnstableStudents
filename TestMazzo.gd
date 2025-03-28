@@ -1,6 +1,8 @@
 extends Node
 @onready var file = 'res://mazzo/mazzo.txt'
 var scene = load("res://oggetti/carta.res")  # Carica la scena
+@onready var mc: Node2D = $mazzo
+@onready var button: Button = $Button
 
 func getQuando(tipo) -> String:
 	var arr = ["SUBITO","INIZIO","FINE","MAI","SEMPRE"]
@@ -18,50 +20,60 @@ func getTarget(tipo) -> String:
 	var arr = ["IO","TU","VOI","TUTTI"]
 	return arr[tipo]
 
-func _ready():
-	var offset = Vector2(3,0)
-	load_file(file,offset)
-
-func load_file(file,offset) -> void:
-	
+func load_file(file) -> Array:
+	var mazzo =[]
 	var f = FileAccess.open(file,FileAccess.READ)
-
+	var instance
+	var numeroCarte
+	var copia 
 	while not f.eof_reached(): # iterate through all lines until the end of file is reached
 		
-		var numeroCarte = int(f.get_line())
-		var instance = scene.instantiate()  # Crea un'istanza
-		instance.position += offset
-		offset+= Vector2(2,0)
-		add_child(instance)  # Aggiunge l'istanza alla scena corrente
-		
-		
-		var nome = f.get_line()
-		var descr = f.get_line()
-		var tipologia = int (f.get_line())
-		var numEffetti = f.get_line()
-		print("NOME: "+nome+"\n"+"Descrizione: "+descr+"\n"+"tipologia: "+getTipologia(int(tipologia))+"\n"+"Effetti?: "+numEffetti+"\n")
-		numEffetti = int(numEffetti)
+		numeroCarte = int(f.get_line())
+		instance = scene.instantiate()  # Crea un'istanza
+		instance.set_meta("nome",f.get_line())
+		instance.set_meta("descr",f.get_line())
+		instance.set_meta("tipo",f.get_line())
+		instance.set_meta("numEffetti",int(f.get_line()))
 		var eff = []
-		if numEffetti>0:
-			for i in range(numEffetti):
+		if instance.get_meta("numEffetti")>0:
+			for i in range(instance.get_meta("numEffetti")):
 				eff.append(f.get_line().split(" "))
-				for e in eff:
-					print(getAzione(int(e[0]))+" "+getTarget(int(e[1]))+" "+getTipologia(int(e[2])))
-					
-					
-		else:
-			print("\nnon ha effetti...")
-		var quando = f.get_line()
-		var opzionale = f.get_line()
-		print("Quando: "+getQuando(int(quando)) + " Opzionale:"+ "si" if opzionale else "no")
-		print("\n\n\n\n")
+		set_meta("effetti",eff)
+		instance.set_meta("quando",int(f.get_line()))
+		instance.set_meta("opzionale",int(f.get_line()))
+		mazzo.append(instance)
+		copia = instance.duplicate()
 		for i in range(numeroCarte):
-			var copia = instance.duplicate()
-			copia.position += offset 
-			add_child(copia)
+			mazzo.append(copia.duplicate())
 	f.close()
-	return
+	return mazzo
+	
+var mazzo
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _ready():
+	mazzo = load_file(file)
+	mostraMazzo(mazzo)
+	
+func mostraMazzo(mazzo):
+	for carta in mazzo:
+		mc.add_child(carta)
+var pressed = false
+
+func svolgi():
+	var carta = mazzo.pop_front()
+	carta.set_meta("pescata",true)
+	print(carta.get_meta("nome"))
+	
+func pesca(): 
+	pressed = true
+	svolgi()
+	await get_tree().create_timer(2).timeout
+	pressed = false
+
+func resetbool():
+	pressed = false
+
 func _process(delta: float) -> void:
+	if(button.button_pressed && pressed == false): 
+		pesca()
 	pass
