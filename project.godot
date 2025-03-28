@@ -11,6 +11,10 @@ config_version=5
 [application]
 
 config/name="UnstableStudents(3dmake)"
-run/main_scene="res://HomeScreen.tscn"
+run/main_scene="res://scene/HomeScreen.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+
+[dotnet]
+
+project/assembly_name="UnstableStudents(3dmake)"
